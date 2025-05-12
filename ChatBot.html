@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantix AI</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    </style>
+</head>
+<body>
+
+<nav>
+  <div class="navbar">
+    <div class="navbar-left">
+      <div class="navbar-title">Quantix AI</div>
+    </div>
+
+<div class="navbar-right">
+  <button id="theme-toggle-btn">🌙</button>
+  
+  <div id="help-info" class="help-box">
+    Email us at <a href="mailto:syedtanzimwaijih@example.com">syedtanzimwaijih@example.com</a>
+  </div>
+  
+  <button class="help-btn" id="help-btn-id">Help</button>
+</div>
+
+  </div>
+</nav>
+
+    <div id="welcome-message" class="welcome-message">How can I help you today?</div>
+
+    <div class="chat-container">
+
+        <div class="ai-chat-box"> 
+        </div>
+    </div>
+
+    <div class="prompt-area">
+       <div class="prompt-conatiner">
+
+        <div id="imagePreview" style="margin-bottom: 10px;"></div>
+
+        <input type="text" id="prompt" placeholder="Message" autocomplete="off">
+
+        <button id="image">
+            <img src="Images/image.png" alt="" width="20">
+        </button>
+        <input type="file" id="imageInput" accept="image/*" hidden>
+
+        <button id="submit"><img src="Images/Submit.png" alt="" width="20"></button>
+        <button id="stopGeneration" style="display:none;">Stop Generation</button>
+       </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+</body>
+</html>
