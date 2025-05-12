@@ -1,64 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantix AI</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantix AI</title>
+
+  <!-- Link to external CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Import Google Font -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+  </style>
 </head>
 <body>
 
+<!-- Navigation bar -->
 <nav>
   <div class="navbar">
     <div class="navbar-left">
       <div class="navbar-title">Quantix AI</div>
     </div>
 
-<div class="navbar-right">
-  <button id="theme-toggle-btn">🌙</button>
-  
-  <div id="help-info" class="help-box">
-    Email us at <a href="mailto:syedtanzimwaijih@example.com">syedtanzimwaijih@example.com</a>
-  </div>
-  
-  <button class="help-btn" id="help-btn-id">Help</button>
-</div>
+    <div class="navbar-right">
+      <!-- Dark theme toggle button -->
+      <button id="theme-toggle-btn">🌙</button>
 
+      <!-- Help information box -->
+      <div id="help-info" class="help-box">
+        Email us at <a href="mailto:syedtanzimwaijih@example.com">syedtanzimwaijih@example.com</a>
+      </div>
+
+      <!-- Help button to show/hide help box -->
+      <button class="help-btn" id="help-btn-id">Help</button>
+    </div>
   </div>
 </nav>
 
-    <div id="welcome-message" class="welcome-message">How can I help you today?</div>
+<!-- Welcome message area with typing effect -->
+<div id="welcome-message" class="welcome-message">
+  <span id="element">How can I help you today?</span>
+</div>
 
-    <div class="chat-container">
+<!-- Chat container where AI and user messages will appear -->
+<div class="chat-container">
+  <div class="ai-chat-box"></div>
+</div>
 
-        <div class="ai-chat-box"> 
-        </div>
-    </div>
+<!-- Input area for user prompt and image upload -->
+<div class="prompt-area">
+  <div class="prompt-container">
+    <div id="imagePreview" style="margin-bottom: 10px;"></div>
 
-    <div class="prompt-area">
-       <div class="prompt-conatiner">
+    <!-- User text input -->
+    <input type="text" id="prompt" placeholder="Message" autocomplete="off">
 
-        <div id="imagePreview" style="margin-bottom: 10px;"></div>
+    <!-- Image upload trigger button -->
+    <button id="image">
+      <img src="Images/image.png" alt="Upload" width="20">
+    </button>
 
-        <input type="text" id="prompt" placeholder="Message" autocomplete="off">
+    <!-- Hidden file input for image selection -->
+    <input type="file" id="imageInput" accept="image/*" hidden>
 
-        <button id="image">
-            <img src="Images/image.png" alt="" width="20">
-        </button>
-        <input type="file" id="imageInput" accept="image/*" hidden>
+    <!-- Submit prompt button -->
+    <button id="submit">
+      <img src="Images/Submit.png" alt="Submit" width="20">
+    </button>
 
-        <button id="submit"><img src="Images/Submit.png" alt="" width="20"></button>
-        <button id="stopGeneration" style="display:none;">Stop Generation</button>
-       </div>
-    </div>
+    <!-- Stop generation button (hidden initially) -->
+    <button id="stopGeneration" style="display:none;">Stop Generation</button>
+  </div>
+</div>
 
-    <script src="script.js"></script>
-    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
+<!-- JavaScript dependencies and scripts -->
+<script src="script.js"></script>
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
+<!-- Initialize typing animation on the welcome message -->
+<script>
+  var typed = new Typed('#element', {
+    strings: ['Hi there', 'I am your smart assistant', 'Ask me anything'],
+    typeSpeed: 40,
+  });
+</script>
+
 </body>
 </html>
