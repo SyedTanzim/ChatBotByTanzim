@@ -505,6 +505,8 @@ img.chooseimg {
 @media (max-width: 500px) {
 
 .prompt-conatiner {
+    position: relative;
+    bottom: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
