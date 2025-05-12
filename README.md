@@ -32,7 +32,7 @@ Tested on widths as narrow as 390px – the chatbot remains fully usable and vis
 
 ---
 
-🔗 **Live Demo:** [Add your GitHub Pages or Netlify link here]  
+🔗 **Live Demo:**  
 📁 **Clone & Explore:**  
 ```bash
-git clone https://github.com/yourusername/ai-chatbot
+git clone https://github.com/SyedTanzim/ChatBotByTanzim
