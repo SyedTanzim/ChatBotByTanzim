@@ -28,7 +28,7 @@
 }
 
 body {
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -275,7 +275,7 @@ img.chooseimg {
 }
 
 .prompt-area input {
-    font-size: 11px;
+    font-size: 16px;
 }
 
 .welcome-message{
@@ -289,14 +289,11 @@ img.chooseimg {
   }
 
   .ai-chat-area, .user-chat-area {
-    font-size: 17px;
+    font-size: 16px;
   }
-    
-.input, textarea, select {
-  font-size: 16px;
-}
+
   .help-box.show {
-    bottom: 800px;
+    bottom: 500px;
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
