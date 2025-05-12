@@ -32,7 +32,7 @@ Tested on widths as narrow as 390px – the chatbot remains fully usable and vis
 
 ---
 
-🔗 **Live Demo:**  
+🔗 **Live Demo:**  https://quantixai.netlify.app/
 📁 **Clone & Explore:**  
 ```bash
 git clone https://github.com/SyedTanzim/ChatBotByTanzim
