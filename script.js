@@ -1,189 +1,207 @@
-let prompt = document.querySelector("#prompt");
-let chatContainer = document.querySelector(".chat-container");
-let imageButton = document.querySelector("#image");
-let imageInput = document.querySelector("#imageInput");
+// Define constants for DOM elements to avoid repeated queries
+const prompt = document.querySelector("#prompt");
+const chatContainer = document.querySelector(".chat-container");
+const imageButton = document.querySelector("#image");
+const imageInput = document.querySelector("#imageInput");
+const submitButton = document.querySelector("#submit");
+const imagePreview = document.querySelector("#imagePreview");
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+const body = document.body;
+const helpBtn = document.getElementById("help-btn-id");
+const helpBox = document.getElementById("help-info");
+
 let isGenerating = false;
+let user = { message: null, file: { mime_type: null, data: null } };
 
-
+// API URL
 const ApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCEhcb7ee0JC4UiN47kYTm2NFD9z_PkxTc";
 
-let user = {
-    message : null,
-    file:{
-        mime_type :null,
-        data : null
-    }
-};
-
-
-//Dynamic-chat-Box
-function createChatBox(html,classes) {
+// Function to create chat boxes dynamically
+function createChatBox(html, classes) {
     let div = document.createElement("div");
     div.innerHTML = html;
-    div.classList.add(classes);   
+    div.classList.add(classes);
     return div;
 }
 
-//response-generator
+// Function to check if the user is near the bottom of the chat container
+function isUserNearBottom(container, offset = 100) {
+    return container.scrollHeight - container.scrollTop - container.clientHeight < offset;
+}
+
+// Function to scroll the chat container to the bottom smoothly
+function scrollToBottom(container) {
+    if (isUserNearBottom(container)) {
+        container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    }
+}
+
+// Function to handle API response and create typewriter effect with Markdown parsing
 async function generateResponse(aiChatBox) {
-
     let text = aiChatBox.querySelector(".ai-chat-area");
-
-    let RequestOption = {
-        method:"POST", 
-        headers:{'Content-Type' : 'application/json'},
+    
+    let requestOptions = {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             contents: [
-                { parts: [{ text: user.message } , (user.file.data?[{"inline_data":user.file}]:[])
-                ] }
+                { parts: [{ text: user.message }, ...(user.file.data ? [{ "inline_data": user.file }] : [])] }
             ]
         })
     };
 
     try {
-        let response = await fetch(ApiUrl,RequestOption);
+        let response = await fetch(ApiUrl, requestOptions);
         let data = await response.json();
-        let apiResponse = data.candidates[0].content.parts[0].text;
-        text.innerHTML = marked.parse(apiResponse);
+        
+        // Check if the response has valid content
+        if (!data.candidates || !data.candidates[0]?.content?.parts[0]?.text) {
+            text.innerHTML = "❌ Sorry, I couldn't generate a response.";
+            return;
+        }
 
+        let apiResponse = data.candidates[0].content.parts[0].text;
         let responseText = '';
         let i = 0;
         let typingSpeed = 15;
         
+        // Function to type out the response progressively
         function typeWriter() {
             if (i < apiResponse.length) {
                 responseText += apiResponse.charAt(i);
-                text.innerHTML = marked.parse(responseText);
+                text.innerHTML = marked.parse(responseText); // Use plain text first to avoid multiple markdown parses
                 i++;
-                chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
+                scrollToBottom(chatContainer);
                 setTimeout(typeWriter, typingSpeed);
+            } else {
+                text.innerHTML = marked.parse(responseText); // Parse final Markdown once typing is complete
             }
         }
 
         typeWriter();
-    } 
-
-    catch (error) {
-        console.log("Error:", error);           
-    }
-
-    finally{
+    } catch (error) {
+        console.error("Error:", error);
+        let text = aiChatBox.querySelector(".ai-chat-area");
+        text.innerHTML = "❌ An error occurred while fetching data.";
+    } finally {
         isGenerating = false;
         prompt.disabled = false;
-        document.querySelector("#submit").disabled = false;
+        submitButton.disabled = false;
         imageButton.disabled = false;
+        scrollToBottom(chatContainer);
 
-        chatContainer.scrollTo({top:chatContainer.scrollHeight, behavior:"smooth"});
-            user.file = {
-            mime_type: null,
-            data: null
-        };
+        // Clear file data to prevent ghost images in new chats
+        user.file = { mime_type: null, data: null };
     }
 }
 
-//chat-handler
+// Function to handle user chat input and start the AI response process
 function handleChatResponse(message) {
-
     if (isGenerating) return;
 
     isGenerating = true;
-
     prompt.disabled = true;
-    document.querySelector("#submit").disabled = true;
+    submitButton.disabled = true;
     imageButton.disabled = true;
 
     user.message = message;
     document.getElementById("welcome-message").style.display = "none";
 
     let html = `<div class="user-chat-area">${user.message}${user.file.data ? `<img src="data:${user.file.mime_type};base64,${user.file.data}" class="chooseimg"/>` : ""}</div>`;
-
     prompt.value = null;
 
     let userChatBox = createChatBox(html, "user-chat-box");
     chatContainer.appendChild(userChatBox);
-    
-    chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
 
+    scrollToBottom(chatContainer);
+
+    // Show loading animation before generating response
     setTimeout(() => {
-        let html = `<div class="ai-chat-area"><dotlottie-player src="https://lottie.host/bcd288fb-0b06-4aae-ae1a-85c6160d5524/K4veyKx3ph.lottie" background="transparent" speed="1" style="width: 50px; height: 50px" loop autoplay class="loading"></dotlottie-player></div>`;
+        let html = `<div class="ai-chat-area"><dotlottie-player src="https://lottie.host/bcd288fb-0b06-4aae-ae1a-85c6160d5524/K4veyKx3ph.lottie" background="transparent" speed="1" style="width: 50px; height: 50px" loop autoplay class="loading" aria-label="Loading..."></dotlottie-player></div>`;
         let aiChatBox = createChatBox(html, "ai-chat-box");
         chatContainer.appendChild(aiChatBox);
 
-        chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
-
+        scrollToBottom(chatContainer);
         generateResponse(aiChatBox);
     }, 600);
 
-    document.querySelector("#imagePreview").innerHTML = "";
+    // Clear previous image preview
+    imagePreview.innerHTML = "";
 }
 
-//text-input-handler
+// Add event listeners for user input and actions
 prompt.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         const message = prompt.value.trim();
-
         if (message.length > 0 || user.file.data) {
             handleChatResponse(message);
         }
     }
 });
 
-//submit-button
-document.querySelector("#submit").addEventListener("click", () => {
+submitButton.addEventListener("click", () => {
     const message = prompt.value.trim();
-
-    // Only handle chat if there's text or image
     if (message.length > 0 || user.file.data) {
         handleChatResponse(message);
     }
 });
 
-//image-input-handler
-imageInput.addEventListener("change" , ()=>{
+imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
-    if (!file) {return};
+    if (!file) return;
 
     let reader = new FileReader();
-    reader.onload=(e)=>{
-        let base64string = e.target.result.split(",")[1]
+    reader.onload = (e) => {
+        let base64string = e.target.result.split(",")[1];
+        user.file = {
+            mime_type: file.type,
+            data: base64string
+        };
 
-        user.file={
-        mime_type :file.type,
-        data : base64string
-        }
-
-        let imagePreview = document.querySelector("#imagePreview");
         imagePreview.innerHTML = `<img src="${e.target.result}" alt="preview" style="max-height: 100px; border-radius: 8px;">`;
     };
-
     reader.readAsDataURL(file);
-})
+});
 
 imageButton.addEventListener("click", () => {
     imageInput.click();
 });
 
-
-const toggleBtn = document.getElementById('theme-toggle-btn');
-const body = document.body;
-
-// Load theme on page load
+// Theme toggle (Dark/Light)
 window.addEventListener('DOMContentLoaded', () => {
-const savedTheme = localStorage.getItem('theme')
-if (savedTheme === 'dark') {
-    body.classList.add('dark-theme');
-}
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-theme');
+    }
 });
 
-toggleBtn.addEventListener('click', () => {
-body.classList.toggle('dark-theme');
-const isDark = body.classList.contains('dark-theme');
-localStorage.setItem('theme', isDark ? 'dark' : 'light');
+themeToggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-theme');
+    const isDark = body.classList.contains('dark-theme');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
-const helpBtn = document.getElementById("help-btn-id");
-const helpBox = document.getElementById("help-info");
-
+// Help button functionality
 helpBtn.addEventListener("click", () => {
-  helpBox.classList.toggle("show");
+    helpBox.classList.toggle("show");
 });
+
+
+
+
+// Platform Detection
+function adjustPromptPosition() {
+    const promptContainer = document.querySelector(".prompt-container"); // adjust selector as needed
+
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (/iPhone/.test(userAgent) && /Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+        // iPhone Safari
+        promptContainer.classList.add("iphone-prompt-fix");
+    } else if (/Android/.test(userAgent) && /Chrome/.test(userAgent)) {
+        // Android Chrome
+        promptContainer.classList.add("android-prompt-fix");
+    }
+}
+
+window.addEventListener("DOMContentLoaded", adjustPromptPosition);
