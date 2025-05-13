@@ -27,6 +27,7 @@
     margin: 0;
     box-sizing: border-box;
     font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbo";
+    line-height: 1.5rem;
 }
 
 body {
@@ -35,7 +36,6 @@ body {
     overflow: hidden;
     background-color: var(--bg-color);
     color: var(--text-color);
-    line-height: 1.5rem;
 }
 
 /* ==================== NAVBAR ==================== */
